@@ -20,4 +20,27 @@ class BookingRepository {
         );
     }
   }
+  async update(bookingId, data) {
+    try {
+      const booking = await Booking.update(data, {
+        where: {
+          id: bookingId,
+        },
+      });
+      return await Booking.findByPk(bookingId);
+    } catch (error) {
+      console.log("Error in repository layer");
+      if (error.name == "SequelizeValidationError")
+        return new ValidationError(error);
+      else
+        return new AppError(
+          "RepositoryError",
+          "Cannot create booking",
+          "There is some issue while creating booking",
+          StatusCodes.INTERNAL_SERVER_ERROR
+        );
+    }
+  }
 }
+
+module.exports = BookingRepository;
